@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>barrage</title>
+</head>
+
+<body>
+    <style>
+        .barrage-container {
+            position: relative;
+            user-select: none;
+            overflow: hidden;
+        }
+
+        .barrage-item {
+            position: absolute;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .barrage-pause {
+            z-index: 1;
+        }
+    </style>
+    <style>
+        #barrageContainer {
+            border: 1px solid;
+            width: 800px;
+            height: 600px;
+        }
+
+        #barrageContainer .barrage-item {
+            padding: 10px;
+        }
+
+        #barrageContainer .barrage-pause {
+            background: #eee;
+            border-radius: 20px;
+        }
+    </style>
+    <div id="barrageContainer" class="barrage-container"></div>
+    <button id="add">添加字幕</button>
+    <button id="autorun">自动添加字幕</button>
+    <button id="offrun">取消自动添加字幕</button>
+    <button id="clear">清空弹幕</button>
+    <script type="module">
+        import barrage from './barrage.js'
+        const { addBarrageItem, clearBarrageItem } = barrage({ barrageContainer: document.querySelector('#barrageContainer') })
+        document.querySelector('#add').addEventListener('click', function () {
+            addCustomBarrageItem()
+        })
+        let t = 0
+        document.querySelector('#autorun').addEventListener('click', function () {
+            t = setInterval(() => {
+                addCustomBarrageItem()
+            }, 200);
+        })
+        document.querySelector('#offrun').addEventListener('click', function () {
+            clearInterval(t)
+        })
+        document.querySelector('#clear').addEventListener('click', function () {
+            clearBarrageItem()
+        })
+        function addCustomBarrageItem() {
+            let content = ''
+            let text = ('' + Math.random()).slice(-Math.floor(Math.random() * 10))
+            if (Math.random() > 0.5) {
+                content = text
+            } else {
+                content = document.createElement('div')
+                var radio = document.createElement('input')
+                radio.type = 'radio'
+                content.appendChild(radio)
+                content.appendChild(document.createTextNode(text))
+            }
+            addBarrageItem(content, {
+                click: function (event) {
+                    console.log(event.target.textContent)
+                }
+            })
+        }
+    </script>
+</body>
+
+</html>
