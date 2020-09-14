@@ -8,6 +8,8 @@
 4. 可以自己传入任意事件
 5. 可以传入dom或者文本
 
+[demo](https://liyongleihf2006.github.io/barrage/)
+
 ```css
 .barrage-container {
     position: relative;
