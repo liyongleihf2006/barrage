@@ -1,6 +1,40 @@
 export default function barrage({
     barrageContainer
 }){
+    Object.assign(barrageContainer.style,{
+        'pointer-events': 'none'
+    })
+    let mouseEnterTimeT = 0
+    let currentItem = undefined
+    let isMousedown = false
+    document.documentElement.addEventListener('mousedown', function (event) {
+        isMousedown = true
+        clearTimeout(mouseEnterTimeT)
+    })
+    document.documentElement.addEventListener('mouseup', function (event) {
+        isMousedown = false
+    })
+    document.documentElement.addEventListener('mousemove', function (event) {
+        const {x,y} = event
+        let currentBarrageItem = Array.from(barrageItems).find(barrageItem=>{
+            const {top,left,width,height} = barrageItem.getBoundingClientRect()
+            return (x>=left&&x<=left+width&&y>=top&&y<=top+height)
+        })
+        if(currentItem !== currentBarrageItem){
+            currentItem = currentBarrageItem
+            clearTimeout(mouseEnterTimeT)
+            Object.assign(barrageContainer.style,{
+                'pointer-events': 'none'
+            })
+            if(currentBarrageItem && !isMousedown){
+                mouseEnterTimeT = setTimeout(()=>{
+                    Object.assign(barrageContainer.style,{
+                        'pointer-events': 'unset'
+                    })
+                },300)
+            }
+        }
+    })
     const containerWidth = barrageContainer.offsetWidth
     const containerHeight = barrageContainer.offsetHeight
     const barrageItems = barrageContainer.getElementsByClassName('barrage-item')
@@ -35,17 +69,15 @@ export default function barrage({
                 barrageContainer.contains(barrageItem) && barrageContainer.removeChild(barrageItem)
             }
         }
-        let t = 0, running = false, startPauseTime = 0
+        let running = false, startPauseTime = 0
         barrageItem.addEventListener('mouseenter', function () {
-            t = setTimeout(() => {
-                Object.assign(barrageItem.style, {
-                    left: barrageItem.offsetLeft + 'px',
-                    width: window.getComputedStyle(barrageItem).width
-                })
-                barrageItem.classList.add('barrage-pause')
-                startPauseTime = animate.currentTime
-                running = true
-            }, 200);
+            Object.assign(barrageItem.style, {
+                left: barrageItem.offsetLeft + 'px',
+                width: window.getComputedStyle(barrageItem).width
+            })
+            barrageItem.classList.add('barrage-pause')
+            startPauseTime = animate.currentTime
+            running = true
         })
         barrageItem.addEventListener('mouseleave', function () {
             if (running) {
@@ -57,14 +89,13 @@ export default function barrage({
                 barrageItem.clientWidth
                 Object.assign(barrageItem.style, {
                     transform: `translateX(0px)`,
-                    transition: '0.2s'
+                    transition: 'transform 0.2s'
                 })
                 Object.assign(barrageItem.style, {
                     left: 'unset'
                 })
                 barrageItem.classList.remove('barrage-pause')
             }
-            clearTimeout(t)
             if (animate.playState === 'finished') {
                 barrageContainer.removeChild(barrageItem)
             }
@@ -123,7 +154,7 @@ export default function barrage({
         })[0]
         return {
             top: nearestLastItem.offsetTop,
-            right: getRightLen(barrageItem)
+            right: getRightLen(nearestLastItem) - barrageItem.offsetWidth
         }
     }
     function getRightLen(barrageItem) {

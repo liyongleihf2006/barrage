@@ -11,8 +11,8 @@
     <style>
         .barrage-container {
             position: relative;
-            user-select: none;
             overflow: hidden;
+            user-select: none;
         }
 
         .barrage-item {
@@ -27,9 +27,12 @@
     </style>
     <style>
         #barrageContainer {
+            position: absolute;
             border: 1px solid;
             width: 800px;
             height: 600px;
+            top: 8px;
+            left: 8px;
         }
 
         #barrageContainer .barrage-item {
@@ -41,6 +44,8 @@
             border-radius: 20px;
         }
     </style>
+    <textarea style="width:780px;height:580px;margin:10px"
+        placeholder="这是一个在弹幕容器下面的文本域,就是为了测试弹幕容器不会阻塞下面文本域内容的输入,文本域也不会影响弹幕悬浮点击效果,两者互相没有影响"></textarea>
     <div id="barrageContainer" class="barrage-container"></div>
     <button id="add">添加字幕</button>
     <button id="autorun">自动添加字幕</button>
