@@ -35,8 +35,6 @@ export default function barrage({
             }
         }
     })
-    const containerWidth = barrageContainer.offsetWidth
-    const containerHeight = barrageContainer.offsetHeight
     const barrageItems = barrageContainer.getElementsByClassName('barrage-item')
     function addBarrageItem(content = '', events = {}) {
         const barrageItem = document.createElement('div')
@@ -56,10 +54,10 @@ export default function barrage({
             right: right + 'px',
             top: top + 'px'
         })
-        const duration = (containerWidth - right) * 10
+        const duration = (barrageContainer.offsetWidth - right) * 10
         const animate = barrageItem.animate([
             { right: right + 'px' },
-            { right: containerWidth + 'px' }
+            { right: barrageContainer.offsetWidth + 'px' }
         ], {
             duration,
             fill: 'forwards'
@@ -82,7 +80,7 @@ export default function barrage({
         barrageItem.addEventListener('mouseleave', function () {
             if (running) {
                 running = false
-                const translateX = (containerWidth - right) / duration * (animate.currentTime - startPauseTime)
+                const translateX = (barrageContainer.offsetWidth - right) / duration * (animate.currentTime - startPauseTime)
                 Object.assign(barrageItem.style, {
                     transform: `translateX(${translateX}px)`
                 })
@@ -143,7 +141,7 @@ export default function barrage({
         }
         const lowestLastItem = lastItems[lastItems.length - 1]
         const lowestBottomLen = getBottomLen(lowestLastItem)
-        if (lowestBottomLen + barrageItem.offsetHeight <= containerHeight) {
+        if (lowestBottomLen + barrageItem.offsetHeight <= barrageContainer.offsetHeight) {
             return {
                 top: lowestBottomLen,
                 right: -barrageItem.offsetWidth
@@ -158,7 +156,7 @@ export default function barrage({
         }
     }
     function getRightLen(barrageItem) {
-        return containerWidth - (barrageItem.offsetLeft + barrageItem.offsetWidth)
+        return barrageContainer.offsetWidth - (barrageItem.offsetLeft + barrageItem.offsetWidth)
     }
     function getBottomLen(barrageItem) {
         return barrageItem.offsetTop + barrageItem.offsetHeight
